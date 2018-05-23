@@ -23,23 +23,33 @@ function onMain() {
     const ofVersion = document.querySelector("#of-version");
     ofVersion.innerText = version;
 	});
-	app.addEventListener("closed", function (event) {
-		console.log("The application has closed 1");
+
+	const win = fin.desktop.Window.getCurrent();
+	win.addEventListener("close-requested", () => {
+		console.log("close apps...");
+		let otherAppsClosed = false;
 		fin.desktop.System.getAllApplications(function (applicationInfoList) {
-			applicationInfoList.forEach(function (applicationInfo) {
-				if(applicationInfo.isRunning) {
-					let subapp = fin.desktop.Application.wrap(applicationInfo.uuid);
-					subapp.close();
+			let length = applicationInfoList.length;
+
+			applicationInfoList.forEach( (applicationInfo, index) => {
+				if(applicationInfo.isRunning && applicationInfo.uuid !== 'AppTest') {
+					if(index === length -1 ) {
+						otherAppsClosed = true;
+					}
+				 	let subapp = fin.desktop.Application.wrap(applicationInfo.uuid);
+					subapp.close(true);
+				}
+				if(length === 1 || otherAppsClosed) {
+					// close main one
+					app.close(true);
 				}
 			});
 		});
-		console.log("The application has closed 2");
-	}, function () {
-		console.log("The registration was successful");
-	},function (reason) {
+	}, () => {
+		console.log('The registration was successful');
+	}, (reason) => {
 		console.log("failure: " + reason);
 	});
-
 
 }
 
