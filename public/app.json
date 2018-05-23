@@ -1,0 +1,23 @@
+{
+    "startup_app": {
+        "name": "AppTest",
+        "url": "http://localhost:5556/index.html",
+        "uuid": "AppTest",
+        "icon": "http://localhost:5556/favicon.ico",
+        "autoShow": true,
+        "saveWindowState": true,
+        "experimental": {
+            "v2Api": false
+        }
+    },
+    "runtime": {
+        "arguments": "--debug=5858 --v=1",
+        "version": "alpha"
+    },
+    "shortcut": {
+        "company": "OpenFin",
+        "description": "Openfin Application Test",
+        "icon": "http://localhost:5556/favicon.ico",
+        "name": "Openfin Application Test"
+    }
+}
