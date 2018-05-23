@@ -1,6 +1,6 @@
-# Hadouken Application Template
+# Max Application Test
 
-A simple unopinionated Hadouken application template. The purpose of this repository is to allow users to get started with Hadouken immediately by providing a development setup that does not require initial configuration. The setup has minimal dependencies and the feature set is intentionally limited. Any further configuration can be achieved by editing the `app.json` file: [Application Config](https://openfin.co/application-config/).
+A simple app to test max number of applications that can be opened.
 
 ### What you get:
 
@@ -28,7 +28,7 @@ A simple unopinionated Hadouken application template. The purpose of this reposi
 
 ### How to use this:
 
-* Clone this repository: `git clone https://github.com/HadoukenIO/app-template`
+* Clone this repository: `git clone https://github.com/licui3936/max-app-test`
 * Install the dependencies: `cd app-template` & `npm install`
 * Start the live-server and launch the application: `npm start`
 * Add your Javascript code to `main.js` and your HTML to `index.html`

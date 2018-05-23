@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let total = 0;
 let totalNum = null;
 let appNum;
-var appQty = 1, timeout, stopped = false;
+let appQty = 1, timeout, stopped = false;
 function onMain() {
   const app = fin.desktop.Application.getCurrent();
   fin.desktop.System.showDeveloperTools(app.uuid, app.uuid);
@@ -23,39 +23,55 @@ function onMain() {
     const ofVersion = document.querySelector("#of-version");
     ofVersion.innerText = version;
 	});
+	app.addEventListener("closed", function (event) {
+		console.log("The application has closed 1");
+		fin.desktop.System.getAllApplications(function (applicationInfoList) {
+			applicationInfoList.forEach(function (applicationInfo) {
+				if(applicationInfo.isRunning) {
+					let subapp = fin.desktop.Application.wrap(applicationInfo.uuid);
+					subapp.close();
+				}
+			});
+		});
+		console.log("The application has closed 2");
+	}, function () {
+		console.log("The registration was successful");
+	},function (reason) {
+		console.log("failure: " + reason);
+	});
+
+
 }
 
 function createApplications() {
 	appNum = parseInt(document.querySelector("#appNumber").value);
+	totalNum = document.querySelector("#totalAppNum");
 	if(appNum > 0)
 		createApps();
 	else {
 		// Recursively run a new app after receiving
-// 'alive' signal from newly created app
+		// 'alive' signal from newly created app
 		fin.desktop.InterApplicationBus.subscribe(
 			'*',
 			'alive',
 			function(message) {
-				//console.log(message);
-					clearTimeout(timeout);
-					/*updateTest({data: {
-							'Created applications': Number(message)}
-					});*/
-					totalNum = document.querySelector("#totalAppNum");
-					totalNum.innerText = Number(message);
-					// Lower cpu consumption
-					setTimeout(function() {
-						//console.log('create one');
-							createApp2();
-					}, 1);
+				clearTimeout(timeout);
+				/*updateTest({data: {
+						'Created applications': Number(message)}
+				});*/
+				//totalNum = document.querySelector("#totalAppNum");
+				totalNum.innerText = Number(message);
+				// Lower cpu consumption
+				setTimeout(function() {
+					//console.log('create one');
+						createApp2();
+				}, 1);
 			}
 	);
 		createApp2();
 }
 }
 function createApps() {
-	//totalNum = document.querySelector("#totalAppNum");
-	//const appNum = parseInt(document.querySelector("#appNumber").value);
 	let total = 0;
 	for(var i=0;i<appNum;i++){
 		const appName = "app" + i;
@@ -70,7 +86,7 @@ function createApps() {
 function createApp(appName, num) {
 	let left = num % 10 === 0 ? 300 : ((num % 10 * 100) + 300);
 	let	top = (Math.floor(num / 10) * 100) + 50;
-//console.log('num=' + num + ' top=' + top + ' left=' + left);
+	//console.log('num=' + num + ' top=' + top + ' left=' + left);
 	let opt = {
 		name: appName,
 		uuid: appName,
@@ -85,7 +101,7 @@ function createApp(appName, num) {
 	};
 
 
-	let app = new fin.desktop.Application(opt, () => {
+	var app = new fin.desktop.Application(opt, () => {
 		//totalNum.innerText = total;
 		app.run();
 
@@ -94,7 +110,7 @@ function createApp(appName, num) {
 		}
 		else {
 			app.isRunning((running) => {
-				if(isRunning) {
+				if(running) {
 					total++;
 					totalNum.innerText = total;
 				}
