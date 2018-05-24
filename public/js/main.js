@@ -37,11 +37,13 @@ function onMain() {
 						otherAppsClosed = true;
 					}
 				 	let subapp = fin.desktop.Application.wrap(applicationInfo.uuid);
-					subapp.close(true);
+					//subapp.close(true);
+					subapp.terminate();
 				}
 				if(length === 1 || otherAppsClosed) {
 					// close main one
-					app.close(true);
+					//app.close(true);
+					app.terminate();
 				}
 			});
 		});
