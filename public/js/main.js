@@ -17,21 +17,21 @@ let totalNum = null;
 let appNum;
 let appQty = 1, timeout, stopped = false;
 function onMain() {
-  const app = fin.desktop.Application.getCurrent();
-  fin.desktop.System.showDeveloperTools(app.uuid, app.uuid);
-  fin.desktop.System.getVersion(version => {
-    const ofVersion = document.querySelector("#of-version");
-    ofVersion.innerText = version;
+	const app = fin.desktop.Application.getCurrent();
+  	fin.desktop.System.showDeveloperTools(app.uuid, app.uuid);
+  	fin.desktop.System.getVersion(version => {
+		const ofVersion = document.querySelector("#of-version");
+		ofVersion.innerText = version;
 	});
 
 	const win = fin.desktop.Window.getCurrent();
 	win.addEventListener("close-requested", () => {
-		console.log("close apps...");
 		let otherAppsClosed = false;
-		fin.desktop.System.getAllApplications(function (applicationInfoList) {
-			let length = applicationInfoList.length;
 
-			applicationInfoList.forEach( (applicationInfo, index) => {
+		fin.desktop.System.getAllApplications((applicationInfoList) => {
+			let length = applicationInfoList.length;
+			// closing apps
+			applicationInfoList.forEach((applicationInfo, index) => {
 				if(applicationInfo.isRunning && applicationInfo.uuid !== 'AppTest') {
 					if(index === length -1 ) {
 						otherAppsClosed = true;
@@ -68,21 +68,18 @@ function createApplications() {
 			'alive',
 			function(message) {
 				clearTimeout(timeout);
-				/*updateTest({data: {
-						'Created applications': Number(message)}
-				});*/
-				//totalNum = document.querySelector("#totalAppNum");
+
 				totalNum.innerText = Number(message);
 				// Lower cpu consumption
 				setTimeout(function() {
-					//console.log('create one');
 						createApp2();
 				}, 1);
 			}
-	);
+		);
 		createApp2();
+	}
 }
-}
+
 function createApps() {
 	let total = 0;
 	for(var i=0;i<appNum;i++){
@@ -107,14 +104,13 @@ function createApp(appName, num) {
 			defaultWidth: 100,
 			defaultHeight: 100,
 			defaultTop: top,
-      defaultLeft: left,
+      		defaultLeft: left,
 			autoShow: true
 		}
 	};
 
 
-	var app = new fin.desktop.Application(opt, () => {
-		//totalNum.innerText = total;
+	let app = new fin.desktop.Application(opt, () => {
 		app.run();
 
 		if(appNum === 0 || isNaN(appNum)) {
@@ -148,5 +144,35 @@ function createApp2() {
 			stopped = true;
 	}, 3000);*/
 
+}
+
+function createWindows() {
+	let winNum = parseInt(document.querySelector("#winNumber").value);
+	
+	for(var i=0;i<winNum;i++){
+		const winName = "childWin" + i;
+		let index = i;
+		setTimeout(() => {
+			this.createWindow(winName, index);
+		}, 1);
+	}
+}
+
+function createWindow(windowName, index) {
+	let left = index % 10 === 0 ? 300 : ((index % 10 * 100) + 300);
+	let	top = (Math.floor(index / 10) * 100) + 50;
+	console.log('index=' + index + ' top=' + top + ' left=' + left);
+	var win = new fin.desktop.Window({
+		name: windowName,
+		url: "about:blank",
+		defaultWidth: 100,
+		defaultHeight: 100,
+		defaultTop: top,
+		defaultLeft: left,
+		frame: true,
+		resizable: false,
+		state: "normal",
+		autoShow: true
+	});
 }
 
